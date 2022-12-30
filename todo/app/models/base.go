@@ -1,7 +1,5 @@
 package models
 
-// package uuid ("github.com/google/uuid")
-
 import (
 	"crypto/sha1"
 	"database/sql"
