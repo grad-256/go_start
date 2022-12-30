@@ -3,6 +3,8 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"regexp"
+	"strconv"
 	"text/template"
 
 	"sqlite/todo/app/models"
@@ -30,20 +32,20 @@ func session(writer http.ResponseWriter, request *http.Request) (sess models.Ses
 	return sess, err
 }
 
-// var validPath = regexp.MustCompile("^/todos/(edit|save|update|delete)/([0-9]+)$")
+var validPath = regexp.MustCompile("^/todos/(edit|save|update|delete)/([0-9]+)$")
 
-// func parseURL(fn func(http.ResponseWriter, *http.Request, int)) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		q := validPath.FindStringSubmatch(r.URL.Path)
-// 		if q == nil {
-// 			http.NotFound(w, r)
-// 			return
-// 		}
-// 		id, _ := strconv.Atoi(q[2])
-// 		fmt.Println(id)
-// 		fn(w, r, id)
-// 	}
-// }
+func parseURL(fn func(http.ResponseWriter, *http.Request, int)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		q := validPath.FindStringSubmatch(r.URL.Path)
+		if q == nil {
+			http.NotFound(w, r)
+			return
+		}
+		id, _ := strconv.Atoi(q[2])
+		fmt.Println(id)
+		fn(w, r, id)
+	}
+}
 
 func StartMainServer() error {
 	files := http.FileServer(http.Dir(config.Config.Static))
@@ -56,10 +58,10 @@ func StartMainServer() error {
 	http.HandleFunc("/authenticate", authenticate)
 	http.HandleFunc("/todos", index)
 	http.HandleFunc("/todos/new", todoNew)
-	// http.HandleFunc("/todos/save", todoSave)
-	// http.HandleFunc("/todos/edit/", parseURL(todoEdit))
-	// http.HandleFunc("/todos/update/", parseURL(todoUpdate))
-	// http.HandleFunc("/todos/delete/", parseURL(todoDelete))
+	http.HandleFunc("/todos/save", todoSave)
+	http.HandleFunc("/todos/edit/", parseURL(todoEdit))
+	http.HandleFunc("/todos/update/", parseURL(todoUpdate))
+	http.HandleFunc("/todos/delete/", parseURL(todoDelete))
 
 	return http.ListenAndServe(":"+config.Config.Port, nil)
 }
