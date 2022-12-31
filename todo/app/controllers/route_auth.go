@@ -44,6 +44,10 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 func authenticate(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/login", 302)
+	}
 	user, err := models.GetUserByEmail(r.PostFormValue("email"))
 	fmt.Println(user.PassWord)
 	fmt.Println(models.Encrypt(r.PostFormValue("password")))
