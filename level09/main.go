@@ -3,6 +3,8 @@ package main
 import "fmt"
 
 //ポインタ
+// 値型に分類されるデータ構造 基本型 参照型 構造体
+// メモリ上のアドレスと型の情報
 
 func Double(i int) {
 	i = i * 2
