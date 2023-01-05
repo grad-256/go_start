@@ -8,6 +8,7 @@ import (
 // ジェネリクス
 // 中身は一緒でも方が違う場合でも
 // コードの再利用できるようにする
+// 堅安全性を維持できる
 func PrintSlice[T any](s []T) {
 	for _, v := range s {
 		fmt.Println(v)
@@ -53,6 +54,8 @@ type T[A any, B []C, C *A] struct {
 	c C
 }
 
+// comparable　要素の比較が可能
+// mapには比較可能な型をセットする必要がある
 type Set[T comparable] map[T]struct {
 }
 
@@ -70,6 +73,10 @@ func (s Set[T]) Add(x T) {
 }
 
 func (s Set[T]) Remove(x T) {
+	fmt.Println("---- ssssss -----")
+	fmt.Println(s)
+	fmt.Println(x)
+	fmt.Println("-----------------")
 	delete(s, x)
 }
 
@@ -97,9 +104,7 @@ func main() {
 	// var t T[int, []*int, *int]
 	// fmt.Println("A: %T, B: %T, C: %T\n", t.a, t.b, t.c)
 
-	s := NewSet(1, 2, 3)
-	fmt.Println(s)
-
+	s := NewSet(1, 2, 3, 4)
 	s.Remove(1)
 	fmt.Println(s)
 }
